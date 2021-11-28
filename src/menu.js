@@ -1,5 +1,4 @@
 import { Menu } from './core/menu';
-import { Module } from './core/module';
 
 export class ContextMenu extends Menu {
   static CLASS_NAME = 'open';
@@ -32,13 +31,20 @@ export class ContextMenu extends Menu {
     });
   }
 
+  clear() {
+    const filteredElements = [].slice.call(this.el.parentNode.children).filter(child => (child !== this.el));
+    filteredElements.forEach(el => el.remove());
+  }
+
   start() {
     this.fillMenuElement();
 
     this.el.addEventListener('click', (event) => {
       const {target} = event;
-
+      
       if (target.tagName === 'LI') {
+        this.clear();
+        this.close();
         const currentType = target.dataset.type;
         const clickedModuleInstance = this.modules.filter(moduleInstance => moduleInstance.type === currentType)[0];
   
@@ -48,6 +54,11 @@ export class ContextMenu extends Menu {
 
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault();
+
+      const {pageX, pageY} = event;
+
+      this.el.style.left = `${pageX}px`;
+      this.el.style.top = `${pageY}px`;
 
       this.el.classList.contains(ContextMenu.CLASS_NAME)
           ? ''
