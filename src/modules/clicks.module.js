@@ -1,71 +1,90 @@
 import { Module } from '../core/module'
 
 export class ClicksModule extends Module {
-  #clicks //количество нажатий
-  #timer //таймер обратного отсчёта
-
-  #running //запущен ли сейчас слушатель нажатий
-  #listener //функция-обработчик событий
   static TYPE = 'ClickModule'
   static TEXT = 'Считать клики (за 3 секунды)'
-  counterDiv //отображение блока счётчика кликов
+
+  #clicks
+  #timer
+  #isRunning
+  #timeInterval
+  #cb
+
   constructor() {
     super(ClicksModule.TYPE, ClicksModule.TEXT)
+
     this.#clicks = 0
-
-    //стили для body
-    document.body.style.display = 'flex'
-    document.body.style.alignItems = 'flex-end'
-    document.body.style.justifyContent = 'center'
-
-    this.running = false
-
-    //стили для блока кликов
-    this.counterDiv = document.createElement('div')
-    this.counterDiv.classList.add('blockCounter')
-    this.counterDiv.style.color = 'blue'
-    this.counterDiv.style.backgroundColor = 'coral'
-    this.counterDiv.style.fontSize = '2rem'
-    this.counterDiv.style.fontWeight = 'bold'
-
-    this.#listener = () => {
-      if (this.#running) {
-        this.#clicks++
-        this.counterDiv.textContent = `Сделано кликов: ${this.#clicks}`
-      }
-    }
+    this.#isRunning = false
+    this.#timeInterval = 3
   }
+
+  createListener() {
+    const cb = () => {
+      this.#clicks++
+      this.updateClickCounter()
+    }
+
+    document.body.addEventListener('click', cb)
+
+    return cb
+  }
+
+  createClickCounter() {
+    const counterDiv = document.createElement('div')
+    counterDiv.id = 'counter'
+    counterDiv.style.color = 'blue'
+    counterDiv.style.background = 'linear-gradient(90deg, #ff85e4 0%, #229efd 179.25%)'
+    counterDiv.style.fontSize = '2rem'
+    counterDiv.style.fontWeight = 'bold'
+    counterDiv.style.width = '300px'
+    counterDiv.style.margin = '5% auto 0'
+    counterDiv.style.textAlign = 'center'
+    counterDiv.textContent = `Сделано кликов: ${this.#clicks}`
+
+    return counterDiv
+  }
+
+  getCounter() {
+    return document.body.querySelector('#counter')
+  }
+
+  updateClickCounter() {
+    const counter = this.getCounter()
+    counter.textContent = `Сделано кликов: ${this.#clicks}`
+  }
+
   finish() {
-    clearInterval(this.#timer) //останавливаем таймер
-    this.#running = false //остановка подсчётов
-    document.body.removeEventListener('click', this.#listener) //удаление обработчика
-    this.toHTML() //вывод сообщения
+    clearInterval(this.#timer)
+    this.#isRunning = false
+    this.displayMessage()
+
+    document.body.removeEventListener('click', this.#cb)
+
+    const counter = this.getCounter()
+    counter.remove()
+  }
+
+  displayMessage() {
+    alert(`За 3 секунды было сделано ${this.#clicks} кликов`)
   }
 
   trigger() {
-    //запуск посчёта кликов
+    this.#clicks = 0
+    this.#isRunning = true
 
-    this.#clicks = 0 //обнуляем счётчик
-    this.#running = true
-    const time = 3
-    let curretntTime = time //текущее количество секунд
-    document.body.addEventListener('click', this.#listener) //запускаем слушатель
+    if (this.#isRunning) {
+      document.body.append(this.createClickCounter())
+    }
 
-    document.body.append(this.counterDiv)
+    this.#cb = this.createListener()
 
-    //запуск обратного отсчёта
-    this.timer = setInterval(() => {
-      if (curretntTime === 0) {
+    let currentTime = this.#timeInterval
+    this.#timer = setInterval(() => {
+      if (currentTime === 0) {
         this.finish()
       } else {
-        curretntTime-- //после 1 секунды уменьшаем оставшееся время на 1
+        currentTime--
       }
     }, 1000)
-  }
-
-  toHTML() {
-    //вывод сообщения пользователю
-    alert(`За 3 секунды было сделано ${this.#clicks} кликов`)
-    document.body.removeChild(this.counterDiv)
   }
 }

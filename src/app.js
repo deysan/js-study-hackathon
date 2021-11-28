@@ -7,9 +7,19 @@ import { ShapeModule } from './modules/shape.module';
 import { MessageModule } from './modules/message/message.module';
 import { TimerModule } from './modules/timer/timer.module';
 import { PrintModule } from './modules/print.module';
+import { ClicksModule } from './modules/clicks.module';
 
 const menu = new ContextMenu('.menu', {
-  modules: [BackgroundModule, AudioModule, VideoModule, ShapeModule, MessageModule, TimerModule, PrintModule],
+  modules: [
+    BackgroundModule,
+    AudioModule,
+    VideoModule,
+    ShapeModule,
+    MessageModule,
+    TimerModule,
+    PrintModule,
+    ClicksModule,
+  ],
 });
 
 menu.start();
