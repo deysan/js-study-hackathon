@@ -21,19 +21,19 @@ export class ContextMenu extends Menu {
     this.el.insertAdjacentHTML('beforeend', module);
   }
 
-  fillMenuElement() {
-    this.modules = this.modules.map(Module => new Module);
-
-    this.modules.forEach(moduleInstance => {
-      const moduleElement = moduleInstance.toHTML();
-      
-      this.add(moduleElement);
-    });
-  }
-
   clear() {
     const filteredElements = [].slice.call(this.el.parentNode.children).filter(child => (child !== this.el));
     filteredElements.forEach(el => el.remove());
+  }
+
+  fillMenuElement() {
+      this.modules = this.modules.map(Module => new Module);
+
+      this.modules.forEach(moduleInstance => {
+        const moduleElement = moduleInstance.toHTML();
+        
+        this.add(moduleElement);
+      });
   }
 
   start() {
@@ -60,7 +60,7 @@ export class ContextMenu extends Menu {
       this.el.style.left = `${pageX}px`;
       this.el.style.top = `${pageY}px`;
 
-      this.el.classList.contains(ContextMenu.CLASS_NAME)
+      this.el.classList.contains(ContextMenu.CLASS_NAME) && this.modules !== []
           ? ''
           : this.open();
     });
