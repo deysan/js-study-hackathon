@@ -8,6 +8,7 @@ import { MessageModule } from './modules/message/message.module';
 import { TimerModule } from './modules/timer/timer.module';
 import { PrintModule } from './modules/print.module';
 import { ClicksModule } from './modules/clicks.module';
+import { BestModule } from './modules/best.module';
 
 const menu = new ContextMenu('.menu', {
   modules: [
@@ -19,6 +20,7 @@ const menu = new ContextMenu('.menu', {
     TimerModule,
     PrintModule,
     ClicksModule,
+    BestModule,
   ],
 });
 
