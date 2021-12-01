@@ -27,27 +27,27 @@ export class ContextMenu extends Menu {
   }
 
   fillMenuElement() {
-      this.modules = this.modules.map(Module => new Module);
+    this.modules = this.modules.map(Module => new Module);
 
-      this.modules.forEach(moduleInstance => {
-        const moduleElement = moduleInstance.toHTML();
-        
-        this.add(moduleElement);
-      });
+    this.modules.forEach(moduleInstance => {
+      const moduleElement = moduleInstance.toHTML();
+
+      this.add(moduleElement);
+    });
   }
 
   start() {
     this.fillMenuElement();
 
     this.el.addEventListener('click', (event) => {
-      const {target} = event;
-      
+      const { target } = event;
+
       if (target.tagName === 'LI') {
         this.clear();
         this.close();
         const currentType = target.dataset.type;
         const clickedModuleInstance = this.modules.filter(moduleInstance => moduleInstance.type === currentType)[0];
-  
+
         clickedModuleInstance.trigger();
       }
     });
@@ -55,14 +55,14 @@ export class ContextMenu extends Menu {
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault();
 
-      const {pageX, pageY} = event;
+      const { pageX, pageY } = event;
 
       this.el.style.left = `${pageX}px`;
       this.el.style.top = `${pageY}px`;
 
       this.el.classList.contains(ContextMenu.CLASS_NAME) && this.modules !== []
-          ? ''
-          : this.open();
+        ? ''
+        : this.open();
     });
   }
 }

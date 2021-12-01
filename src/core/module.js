@@ -3,7 +3,7 @@ export class Module {
     if (!type) {
       throw new Error('Please specify "type" param');
     }
-    
+
     if (!text) {
       throw new Error('Please specify "text" param');
     }
